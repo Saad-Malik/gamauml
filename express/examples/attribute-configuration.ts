@@ -1,6 +1,9 @@
 import { DomainConfiguration, Runtime } from 'graph-on-rails';
 import _ from 'lodash';
 
+
+// ENUM
+
 const winnerYear = {
   Toyota: [2020, 2019, 2018],
   Porsche: [2017,2016,2015,2014,2013,2012,2011,2010],

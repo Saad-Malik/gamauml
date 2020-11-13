@@ -13,3 +13,10 @@ entity:
       brand: CarBrand!
       mileage: Int
       color: String
+  Driver: 
+    attributes:
+      name: String
+      age: Int
+    assocTo:
+      - type: Car
+
