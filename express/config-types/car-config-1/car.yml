@@ -19,4 +19,10 @@ entity:
       age: Int
     assocTo:
       - type: Car
+  Department: 
+    attributes:
+      name: String
+      Year: Int
+    assocTo:
+      - type: Driver    
 

@@ -1,83 +1,75 @@
-import { database } from 'faker';
-import _, { isEmpty, List } from 'lodash';
+import { DomainConfiguration, DomainDefinition, Entity, EntityConfig } from 'graph-on-rails';
+import _, { forEach, isEmpty, isUndefined, List } from 'lodash';
 
-export default class UMLDefinition{
-   
-  domainConfiguration: any;
+export default class UMLDefinition {
 
-  constructor(domainConfiguration: any){
-      this.domainConfiguration = domainConfiguration;
+  domainConfiguration: DomainConfiguration;
+
+  constructor(domainConfiguration: DomainConfiguration){
+    this.domainConfiguration = domainConfiguration;
   }
 
   // return an array of entities 
   getEntities(){
-     return Object.keys(this.domainConfiguration.entity); 
+     return _.keys(this.domainConfiguration.entity);
   }
 
-  
-  getAttributesKey(){
-    let entities = this.getEntities();
-    let attributesKey: any[] = [];
-    let obj = this.domainConfiguration.entity;
-    entities.forEach((val,i)=>{
-      attributesKey.push(Object.keys(obj[val].attributes))
-    })
-    return attributesKey;
+
+  // return attributes of an entities
+  getAttributes(){
+     return _.values(this.domainConfiguration.entity);
   }
 
-  getAttributesValues(){
-    let entities = this.getEntities();
-    let attributesValues: any[] = [];
-    let obj = this.domainConfiguration.entity;
-    entities.forEach((val,i)=>{
-      attributesValues.push(Object.values(obj[val].attributes))
-    })
-    return attributesValues;
-  }
-
-  combine(){
-    let keys = this.getAttributesKey();
-    let value = this.getAttributesValues();
-    let object = [];
-    for (let i = 0; i < keys.length; i++){
-         object.push(_.zipObject(keys[i],value[i]))
-    }
-    return object;
-  }
-
-  entityWithAttributes(){
+  displayClass(){
     let entitis = this.getEntities();
-    let attributes =this.combine();
-
+    let attributes =this.getAttributes();
     entitis.forEach((entity,i) => {
         console.log("class " + entity)
-        console.log(_.nth(attributes, i))
-        console.log()
+        const data = _.nth(attributes, i);
+        console.log(data?.attributes);
+    });
+  }
+
+  displayRelation(){
+    let entitis = this.getEntities();
+    let attributes =this.getAttributes();
+    entitis.forEach((entity,i) => {
+        const data = _.nth(attributes, i);
+        this.generateRelationTo(entity,data?.assocTo);
+        this.generateRelationToMany(entity,data?.assocToMany);
     });
   }
 
 
-  // convert into relation TODO: CATCH NULL
-  assocToUML(){
-    let entities = this.getEntities();
-    let attributesValues: any[] = [];
-    let obj = this.domainConfiguration.entity;
-    entities.forEach((val,i)=>{
-      if (typeof Object.getOwnPropertyNames(obj[val]) !== 'undefined' && Object.getOwnPropertyNames(obj[val]).length > 0) {
-          attributesValues.push( Object.getOwnPropertyNames(obj[val]))
-        }
-    })
-    console.log(attributesValues);
+  private generateRelationTo(entity:string,relation:any){
+    if(!isEmpty(relation)){
+      for(const i in relation){
+        if(!isUndefined(relation[i].type)){
+          console.log(entity + " --> " + relation[i].type)
+        }else{
+        console.log(entity + " --> " + relation[i])
+      }
+    } 
+  }
   }
 
-  
-  // save it in a file 
+  private generateRelationToMany(entity: string,relation: any){
+    if(!isEmpty(relation)){
+      for(const i in relation){
+        if(!isUndefined(relation[i].type)){
+          console.log(entity + " *-- " + relation[i].type)
+        }else{
+        console.log(entity + " *-- " + relation[i])
+      } 
+    }    
+  }
+  }
 
-
-  // print out the end result
+  // print out the end result - Currently console log 
   public generateUML(){
     console.log("@startuml")
-    this.entityWithAttributes();
+    this.displayClass();
+    this.displayRelation();
     console.log("@enduml")
   }
 
