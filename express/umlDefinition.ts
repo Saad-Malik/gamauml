@@ -1,5 +1,5 @@
-import { DomainConfiguration, DomainDefinition, Entity, EntityConfig } from 'graph-on-rails';
-import _, { forEach, isEmpty, isUndefined, List } from 'lodash';
+import { DomainConfiguration} from 'graph-on-rails';
+import _, {isEmpty, isUndefined } from 'lodash';
 
 export default class UMLDefinition {
 
