@@ -10,6 +10,7 @@ import { createServer } from 'http';
 import path from 'path';
 import UMLDefinition  from './umlDefinition';
 
+
 const example3:DomainConfiguration = {
   entity:{
     Car: {
@@ -108,6 +109,11 @@ const domainDefinition = new DomainDefinition({
 const domainConfiguration= './config-types/car-config-1';
 
 
+
+
+
+
+
 (async () => {
   const app = express();
   app.use('*', cors());
@@ -121,12 +127,20 @@ const domainConfiguration= './config-types/car-config-1';
   // const server = await GamaServer.create( apolloConfig, ecommerce);
   // server.applyMiddleware({ app, path: '/graphql' });
 
+
+  
   const runtime = await Runtime.create(domainDefinition);
   const runtimeConfiguration = runtime.domainDefinition.getConfiguration();
   const uml = new UMLDefinition(runtimeConfiguration);
   uml.generateUML();
   
   const httpServer = createServer( app );
+
+  app.get('/svg', function(req, res) {
+    res.set('Content-Type', 'image/svg+xml');
+    res.sendFile(path.join(__dirname, './gama.svg'))
+  });
+
   httpServer.listen(
     { port: 3000 },
     () => console.log(`
