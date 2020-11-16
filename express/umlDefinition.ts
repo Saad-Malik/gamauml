@@ -103,6 +103,7 @@ export default class UMLDefinition {
   }
 
 
+  // draw an SVG diagram 
   generateUML(){
 
     this.puml.out.on("data", (chunk: string) => {

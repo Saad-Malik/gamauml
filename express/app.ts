@@ -129,7 +129,7 @@ const domainConfiguration= './config-types/car-config-1';
 
 
   
-  const runtime = await Runtime.create(domainDefinition);
+  const runtime = await Runtime.create(domainConfiguration);
   const runtimeConfiguration = runtime.domainDefinition.getConfiguration();
   const uml = new UMLDefinition(runtimeConfiguration);
   uml.generateUML();
